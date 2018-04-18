@@ -201,6 +201,9 @@ class ramanspectrum(object):
         globwidth = 1
 
         xpeak, ypeak = np.genfromtxt(self.peakfile, unpack = True)
+        if type(xpeak) == np.float64:
+            xpeak = [xpeak]
+            ypeak = [ypeak]
 
 
         for i in range(0, len(xpeak)):

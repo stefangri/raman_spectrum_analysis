@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
 rcParams['font.family'] = 'serif'
-rcParams['font.serif'] = '[lmroman10-regular]:+tlig;'
+rcParams['font.serif'] = '[lmroman10-regular]:+tlig;'  #change font here
 rcParams['text.usetex'] = True
 rcParams['pgf.texsystem'] = 'lualatex'
 rcParams['font.size'] = 10
@@ -21,7 +21,7 @@ rcParams['pgf.preamble'] = r'\usepackage[locale=DE]{siunitx}'
 rcParams['text.latex.preamble'] = r'\usepackage[math-style=ISO,bold-style=ISO,sans-style=italic,nabla=upright,partial=upright,]{unicode-math}'
 rcParams['axes.formatter.use_mathtext'] = True
 rcParams['legend.fontsize'] = 10
-rcParams['figure.figsize'] = 5.906, 3.937
+rcParams['figure.figsize'] = 5.906, 3.937 #size of plot in inches
 rcParams['savefig.dpi'] = 300
 from matplotlib.patches import Rectangle
 from uncertainties.unumpy import nominal_values as noms
@@ -52,9 +52,9 @@ def latexplot(label):
     yfit = np.ones(len(xplot)) * baseline
     for i in range(0, len(sigma)):
         ypeak = voigt(xplot, ctr[i], sigma[i], gamma[i]) * np.max(y)
-        ax.text(ctr[i], voigt(ctr[i], ctr[i], sigma[i], gamma[i]) * np.max(y) + baseline, str(i + 1), fontsize=9)
+        #ax.text(ctr[i], voigt(ctr[i], ctr[i], sigma[i], gamma[i]) * np.max(y) + baseline, str(i + 1), fontsize=9) 
         if i == 0:
-            ax.plot(xplot, ypeak + baseline , linewidth = 0.5, color = 'grey', label = 'Gefittete Peaks')
+            ax.plot(xplot, ypeak + baseline , linewidth = 0.5, color = 'grey', label = 'Peaks')
         else:
             ax.plot(xplot, ypeak + baseline , linewidth = 0.5, color = 'grey')
 
@@ -62,9 +62,9 @@ def latexplot(label):
 
 
 
-    ax.plot(x, y, 'b-',label = 'Messdaten', linewidth = 0.5)
+    ax.plot(x, y, 'b-',label = 'Data', linewidth = 0.5)
     ax.plot(xplot, yfit, 'r-', label = 'Fit', linewidth = 0.5)
-    siunitx_ticklabels(ax)
+    #siunitx_ticklabels(ax)
 
     ax.set_xlabel(r'Raman Shift' r'$\displaystyle \,  / \si{cm^{-1}}$')
     ax.set_ylabel(r'Intensity' r'$\displaystyle\,  /  \si{Counts\per\second}$')
@@ -72,7 +72,7 @@ def latexplot(label):
     ax.grid()
     ax.legend()
     fig.tight_layout()
-    fig.savefig(label + '/latexplot_' + label + '.pdf')
+    fig.savefig(label + '/latexplot_' + label + '.pdf', bbox_inches = 'tight')
     plt.close(fig)
     plt.clf()
 

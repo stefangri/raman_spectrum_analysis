@@ -25,7 +25,7 @@ def voigt(x, x0, sigma, gamma):
 
 def poly(x, a):
     """
-    Constant function as model for the underground.
+    Constant function as model for the background.
     """
     return [a for i in x]
 
@@ -34,7 +34,7 @@ class ramanspectrum(object):
     def __init__(self, data_file, label, peakfile = None, baselinefile = None, fitfile = None):
         self.x, self.y = np.genfromtxt(data_file, unpack = True)
         self.maxyvalue = np.max(self.y)
-        self.y = self.y / self.maxyvalue
+        self.y = self.y / self.maxyvalue #norm the intensity for faster fit
         self.label = label
         self.peakfile = peakfile
         self.baselinefile = baselinefile
@@ -83,7 +83,7 @@ class ramanspectrum(object):
 
     def SelectBaseline(self):
         """
-        Function opens a window with the data, you can select the regions that do not belong to backround signal by clicking.
+        Function opens a window with the data, you can select the regions that do not belong to background signal by clicking.
         """
         fig, ax = plt.subplots()
         ax.plot(self.x, self.y)
@@ -191,7 +191,7 @@ class ramanspectrum(object):
 
     def FitSpectrum(self):
         """
-        Fit Spectrum with initial values provided by SelectBaseline and SelectPeaks
+        Fit Spectrum with initial values provided by SelectBaseline() and SelectPeaks()
         """
 
         polyparams = self.Fitbaseline(self)

@@ -1,7 +1,7 @@
 # raman_spectrum_analysis
 Python methods to fit raman spectra, interactively or automatically.
 
-##How to use the methods for spectrum fit: 
+## How to use the methods for spectrum fit: 
 
 **step 1**: put all the spectra you want to analyze in the methods folder
 

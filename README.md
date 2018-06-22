@@ -7,7 +7,7 @@ How to use the methods for spectrum fit:
 
 **step 2**: run create_structure.py, this will create a folder for each spectrum
 
-**step 3a**: run analyze.py label, where label is the name of the folder of the spectrum you which to analyze
+**step 3a**: run analyze.py label, where label is the name of the folder of the spectrum you want to analyze
 
 **step 3b**: select the spectral region you want to use for the fit by clicking in the window that opens, than close the window
 

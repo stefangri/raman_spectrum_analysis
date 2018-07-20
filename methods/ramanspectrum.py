@@ -213,16 +213,21 @@ class ramanspectrum(object):
         save_model(ramanmodel, self.label + '/ramanmodel_' + self.label + '.sav')
         plt.show()
 
-    def SaveFitParams(self):
+#    def SaveFitParams(self):
         """
         Save the Results of the fit in a .zip file using numpy.savez().
         """
 
-        #model = load_model(self.label + '/ramanmodel_' + self.label + '.sav', funcdefs={'voigt': voigt})
-        fitresult = load_modelresult(self.label + '/modelresult_' + self.label + '.sav', funcdefs={'voigt': voigt})
+#        model = load_model(self.label + '/ramanmodel_' + self.label + '.sav', funcdefs={'voigt': voigt})
+        #fitresult = load_modelresult(self.label + '/modelresult_' + self.label + '.sav', funcdefs={'voigt': voigt})
 
         fitparams = fitresult.params
-        c, stdc, x0, stdx0, height, stdheight, sigma, stdsigma, gamma, stdgamma, fwhm, stdfwhm = ([] for i in range(12))
+        c, stdc, \
+        x0, stdx0, \
+        height, stdheight, \
+        sigma, stdsigma, \
+        gamma, stdgamma, \
+        fwhm, stdfwhm = ([] for i in range(12))
 
         for name in list(fitparams.keys()):
             par = fitparams[name]

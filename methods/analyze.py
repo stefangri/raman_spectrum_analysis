@@ -14,7 +14,6 @@ def analyze(label):
     spec.SelectBaseline()
     spec.SelectPeaks()
     spec.FitSpectrum()
-    spec.SaveFitParams()
 
 
 if __name__ == '__main__':

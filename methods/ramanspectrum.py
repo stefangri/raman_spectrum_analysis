@@ -234,9 +234,9 @@ class ramanspectrum(object):
         plt.plot(self.x, fitresult.best_fit* self.maxyvalue)
         for i in range(0, len(xpeak)):
             plt.plot(self.x, comps['p' + str(i+1)]* self.maxyvalue + comps['constant']* self.maxyvalue, 'k-')
-        plt.show()
         plt.savefig(self.label + '/rawplot_' + self.label + '.pdf')
         save_modelresult(fitresult, self.label + '/modelresult_' + self.label + '.sav')
+        plt.show()
 
 
     def SaveFitParams(self):

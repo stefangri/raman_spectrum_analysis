@@ -10,6 +10,8 @@ from scipy.special import erf
 from lmfit.models import ConstantModel
 from lmfit.model import save_modelresult
 from lmfit.model import load_modelresult
+from lmfit.model import save_model
+from lmfit.model import load_model
 from uncertainties import ufloat
 
 def voigt(x, x0, sigma, gamma):
@@ -20,15 +22,11 @@ def voigt(x, x0, sigma, gamma):
     """
     return  np.real(wofz(((x - x0) + 1j*gamma) / sigma / np.sqrt(2)))
 
-
-
-
 def poly(x, a):
     """
     Constant function as model for the background.
     """
     return [a for i in x]
-
 
 class ramanspectrum(object):
     def __init__(self, data_file, label, peakfile = None, baselinefile = None, fitfile = None):
@@ -40,12 +38,10 @@ class ramanspectrum(object):
         self.baselinefile = baselinefile
         self.fitfile = fitfile
 
-
     def PlotRawData(self, show = True, ax = None):
         """
         Creates a plot of the raw data. show = True will show the plot, show = False will return a matplotlib object
         """
-
         if (ax != None):
             return ax.plot(self.x, self.y, 'kx', label = 'Messdaten', linewidth = 0.5)
         if(show == True):
@@ -54,12 +50,10 @@ class ramanspectrum(object):
         else:
             return plt.plot(self.x, self.y, 'bx', label = 'Messdaten', linewidth = 0.5)
 
-
     def SelectPeaks(self):
         """
         Function opens a Window with the data, you can choose initial values for the peaks by clicking on the plot.
         """
-
         fig, ax = plt.subplots()
         ax.plot(self.x, self.y)
         polyparams = self.Fitbaseline()
@@ -108,7 +102,6 @@ class ramanspectrum(object):
         np.savetxt(self.label + '/baseline_' + self.label + '.txt', np.array(x))
         self.baselinefile = self.label + '/baseline_'+ self.label + '.txt'
 
-
     def SelectSpectrum(self):
         """
         Select the interesting region in the spectrum.
@@ -138,14 +131,10 @@ class ramanspectrum(object):
         self.x = self.x[(self.x > x[0]) & (self.x < x[-1])]
         np.savetxt(self.label + '/spectrumborders_' + self.label + '.txt', np.array(x))
 
-
-
     def FitSpectrumInit(self, label):
         """
         Fit the spectrum with the fit params of another spectrum (given by label) as initial values. Useful when you fit big number of similar spectra.
         """
-
-
         borders = np.genfromtxt(label + '/spectrumborders_' + label + '.txt', unpack = True)
         np.savetxt(self.label + '/spectrumborders_' + self.label + '.txt', borders)
         self.y = self.y[(self.x > borders[0])  &  (self.x < borders[-1])]
@@ -168,11 +157,8 @@ class ramanspectrum(object):
             tempvoigt.set_param_hint(prefix + 'fwhm', expr = '0.5346 * 2 *' + prefix + 'gamma + sqrt(0.2166 * (2*' + prefix + 'gamma)**2 + (2 * ' + prefix + 'sigma * sqrt(2 * log(2) ) )**2  )')
             ramanmodel += tempvoigt
 
-
-
         pars = ramanmodel.make_params()
         fitresult = ramanmodel.fit(self.y, pars, x = self.x, scale_covar = True)
-
 
         plt.clf()
         comps = fitresult.eval_components()
@@ -184,10 +170,6 @@ class ramanspectrum(object):
         plt.savefig(self.label + '/rawplot_' + self.label + '.pdf')
         save_modelresult(fitresult, self.label + '/modelresult_' + self.label + '.sav')
         plt.clf()
-
-
-
-
 
     def FitSpectrum(self):
         """
@@ -205,7 +187,6 @@ class ramanspectrum(object):
             xpeak = [xpeak]
             ypeak = [ypeak]
 
-
         for i in range(0, len(xpeak)):
             prefix = 'p' + str(i + 1)
 
@@ -217,15 +198,8 @@ class ramanspectrum(object):
             tempvoigt.set_param_hint(prefix + 'fwhm', expr = '0.5346 * 2 *' + prefix + 'gamma + sqrt(0.2166 * (2*' + prefix + 'gamma)**2 + (2 * ' + prefix + 'sigma * sqrt(2 * log(2) ) )**2  )')
             ramanmodel += tempvoigt
 
-
-
         pars = ramanmodel.make_params()
         fitresult = ramanmodel.fit(self.y, pars, x = self.x, scale_covar = True)
-
-
-
-
-
 
         print(fitresult.fit_report(min_correl=0.5))
         comps = fitresult.eval_components()
@@ -236,15 +210,16 @@ class ramanspectrum(object):
             plt.plot(self.x, comps['p' + str(i+1)]* self.maxyvalue + comps['constant']* self.maxyvalue, 'k-')
         plt.savefig(self.label + '/rawplot_' + self.label + '.pdf')
         save_modelresult(fitresult, self.label + '/modelresult_' + self.label + '.sav')
+        save_model(ramanmodel, self.label + '/ramanmodel_' + self.label + '.sav')
         plt.show()
-
 
     def SaveFitParams(self):
         """
         Save the Results of the fit in a .zip file using numpy.savez().
         """
 
-        fitresult = load_modelresult(self.label + '/modelresult_' + self.label + '.sav')
+        #model = load_model(self.label + '/ramanmodel_' + self.label + '.sav', funcdefs={'voigt': voigt})
+        fitresult = load_modelresult(self.label + '/modelresult_' + self.label + '.sav', funcdefs={'voigt': voigt})
 
         fitparams = fitresult.params
         c, stdc, x0, stdx0, height, stdheight, sigma, stdsigma, gamma, stdgamma, fwhm, stdfwhm = ([] for i in range(12))
@@ -279,10 +254,7 @@ class ramanspectrum(object):
                 fwhm.append(param.n)
                 stdfwhm.append(param.s)
 
-
         np.savez(self.label + '/fitparams_' + self.label , x0 = x0, stdx0 = stdx0, c = c, stdc = c, height = height, stdheight = stdheight, sigma = sigma, stdsigma = stdsigma, gamma = gamma, stdgamma = stdgamma, fwhm = fwhm, stdfwhm = stdfwhm)
-
-
 
     def Fitbaseline(self,  show = False):
 
